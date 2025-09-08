@@ -6,3 +6,31 @@ datasource db {
   provider = "mysql"
   url      = env("DATABASE_URL")
 }
+
+enum PostStatus {
+  PUBLISHED
+  DRAFT
+}
+
+model User {
+  id       Int     @unique @default(autoincrement())
+  status   Boolean @default(true)
+  name     String
+  email    String  @unique
+  password String
+  posts    Post[]
+}
+
+model Post {
+  id        Int        @unique @default(autoincrement())
+  authorId  Int
+  slug      String     @unique
+  status    PostStatus @default(DRAFT)
+  title     String
+  body      String
+  createdAt DateTime   @default(now())
+  updatedAt DateTime?
+  cover     String
+  tags      String     @default("")
+  author    User?      @relation(fields: [authorId], references: [id])
+}
