@@ -1,12 +1,13 @@
 import { Router } from 'express';
-import { authSignupController } from './auth.controllers';
-import { authSignUpMiddleware } from '../../middlewares/validateRequest';
-import { signupSchema } from './auth.schemas';
+import { authSigninController, authSignupController } from './auth.controllers';
+import { authZodSigninMiddleware, authZodSignupMiddleware } from '../../middlewares/validateRequest';
+import { signinSchema, signupSchema } from './auth.schemas';
+import { jwtStrategyAuth } from './auth.passport.strategy';
 
 const authRoutes = Router();
 
-authRoutes.post('/signup', authSignUpMiddleware(signupSchema), authSignupController);
-// authRoutes.post('/signin', authSigninController);
+authRoutes.post('/signup', authZodSignupMiddleware(signupSchema), authSignupController);
+authRoutes.post('/signin', authZodSigninMiddleware(signinSchema), authSigninController);
 // authRoutes.post('/validate', authValidateController);
 
 // authRoutes.get('/validate', authValidateController);
