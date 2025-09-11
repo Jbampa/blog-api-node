@@ -9,7 +9,7 @@ server.use(helmet());
 server.use(express.json());
 server.use(express.urlencoded({extended: true}));
 
-server.use(routes);
+server.use('/', routes);
 
 server.listen(port, () => {
     console.log(`Server running at: http://localhost:${port}`)
