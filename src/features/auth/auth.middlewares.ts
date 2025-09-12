@@ -1,7 +1,7 @@
 import { NextFunction, RequestHandler } from "express";
 import { verify } from "jsonwebtoken";
 import { ZodError, ZodType } from "zod";
-import { verifyRequest } from "./auth.services";
+// import { verifyRequest } from "./auth.services";
 
 
 export const authZodSignupMiddleware = (zod: ZodType): RequestHandler => async (req, res, next) => {
@@ -25,16 +25,16 @@ export const authZodSigninMiddleware = (zod: ZodType): RequestHandler => async (
     }   
 }
 
-export const privateRoute: RequestHandler = async (req, res, next) => {
-    const user = await verifyRequest(req);
+// export const privateRoute: RequestHandler = async (req, res, next) => {
+//     const user = await verifyRequest(req);
 
-    if(!user) {
-        res.status(401).json({
-            error: "Access denied"
-        })
-    }
+//     if(!user) {
+//         return res.status(401).json({
+//             error: "Access denied"
+//         })
+//     }
 
-    req.user = user
+//     req.user = user;
 
-    next()
-}
+//     next()
+// }

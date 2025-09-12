@@ -35,5 +35,5 @@ export const jwtStrategyAuth: RequestHandler = (req, res, next) => {
             })
         }
     })
-    authStrategy();
+    authStrategy(req, res, next);
 }
