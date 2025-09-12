@@ -1,8 +1,6 @@
 import { RequestHandler, response } from "express";
-import { createUser, findUser } from "../users/user.service";
-import { PrismaClientKnownRequestError } from "@prisma/client/runtime/library";
-import { createToken } from "./auth.service";
-import { encryptPassword } from "../users/user.utils";
+import { authenticateUser, createUser, findUser } from "../users/user.service";
+import { createToken } from "./auth.services";
 import { compare } from "bcryptjs";
 import { AppError } from "../../errors/AppError";
 
@@ -36,27 +34,15 @@ export const authSigninController: RequestHandler = async (req, res) => {
     try {
         const {email, password} =  req.body;
 
-        const user = await findUser(email);
-
-        if(!user){
-            throw new AppError('User not found', 404);
-        }
-
-        const isPasswordCorrect = await compare(password, user.password)
-
-        if(!isPasswordCorrect) {
-            throw new AppError('Incorrect password', 401);
-        }
-
-        const jwtToken = await createToken(user);
+        const AuthUser = await authenticateUser(email, password);
 
         const response = {
             user: {
-                id: user.id,
-                name: user.name,
-                email: user.email,
+                id: AuthUser.user.id,
+                name: AuthUser.user.name,
+                email: AuthUser.user.email
             },
-            token: jwtToken
+            token: AuthUser.token
         }
 
         res.status(200).json({
@@ -78,9 +64,8 @@ export const authSigninController: RequestHandler = async (req, res) => {
 }
 
 
-// export const authValidateController: RequestHandler = (req, res) => {
-//     console.log('chegou');
-//     res.status(200).json({
-//         success: "true"
-//     })
-// }
+export const authValidateController: RequestHandler = (req, res) => {
+    res.status(200).json({
+        user: req.user
+    })
+}

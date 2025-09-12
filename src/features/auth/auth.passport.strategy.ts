@@ -6,7 +6,7 @@ import { Prisma } from "@prisma/client";
 
 const options = {
     jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
-    secretOrKey: process.env.SECRET_JWT as string
+    secretOrKey: process.env.JWT_SECRET as string
 }
 
 export const strategy = new JwtStrategy(options, async (payload, done) => {
