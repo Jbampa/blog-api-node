@@ -2,7 +2,7 @@ import express from 'express';
 import helmet from 'helmet';
 import routes from './routes';
 import passport from 'passport';
-import { strategy } from './features/auth/auth.passport.strategy';
+import { strategy } from './libs/passport';
 
 const server = express();
 const port = process.env.PORT;
