@@ -10,6 +10,7 @@ const port = process.env.PORT;
 server.use(helmet());
 server.use(express.json());
 server.use(express.urlencoded({extended: true}));
+server.use(express.static('public'));
 
 server.use('/', routes);
 

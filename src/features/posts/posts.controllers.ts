@@ -1,7 +1,8 @@
 import { RequestHandler } from "express";
-import { createPost, createSlug, handleCover } from "./posts.services";
+import { createPost, createSlug, findPostBySlug, handleCover, updatePost } from "./posts.services";
 import { User } from "@prisma/client";
 import { findUserById } from "../users/user.service";
+import { coverToUrl } from "../../utils/cover-to-url";
 
 
 export const addPostController: RequestHandler = async (req, res) => {
@@ -42,8 +43,48 @@ export const addPostController: RequestHandler = async (req, res) => {
         slug: newPost.slug,
         title: newPost.title,
         createdAt: newPost.createdAt,
-        cover: newPost.cover,
+        cover: coverToUrl(newPost.cover),
         tags: newPost.tags,
         authorName: author?.name
+    })
+}
+
+export const updatePostController: RequestHandler = async (req, res) => {
+    const { slug } = req.params
+
+    const post = await findPostBySlug(slug);
+
+    if(!post) {
+        return res.status(404).json({
+            error: "Post doesn't exist."
+        })
+    }
+
+    let coverName: string | false =  false;
+
+    if(req.file) {
+        coverName = await handleCover(req.file)
+
+    }
+
+    const updatedPost = await updatePost(slug, {
+        updatedAt: new Date(),
+        title: req.body.title ?? undefined,
+        body: req.body.body ?? undefined,
+        status: req.body.status ?? undefined,
+        tags: req.body.tags ?? undefined,
+        cover: coverName ? coverName: undefined
+    })
+
+    const author = post.author?.name;
+
+    res.status(200).json({
+        id: updatedPost.id,
+        status: updatedPost.status,
+        slug: updatedPost.slug,
+        title: updatedPost.title,
+        createdAt: updatedPost.createdAt,
+        cover: coverToUrl(updatedPost.cover),
+        author: author
     })
 }

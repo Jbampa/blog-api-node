@@ -3,6 +3,8 @@ import fs from 'fs/promises';
 import slug from "slug";
 import { prisma } from "../../libs/prisma";
 import { Prisma } from "@prisma/client";
+import { includes } from "zod";
+import { rename } from "fs";
 
 export const findPostBySlug = async (slug: string) => {
     const post = prisma.post.findUnique({
@@ -40,6 +42,7 @@ export const handleCover = async (file: Express.Multer.File ) => {
         }
     }
 
+    return false;
 }
 
 export const createSlug = async (title: string) => {
@@ -70,4 +73,13 @@ type CreatePostProps = {
 
 export const createPost = async (post: CreatePostProps) => {
     return await prisma.post.create({ data: post });
+}
+
+export const updatePost = async (slug: string, data: Prisma.PostUpdateInput) => {
+    const result = await prisma.post.update({
+        where: { slug },
+        data
+    })
+
+    return result;
 }
