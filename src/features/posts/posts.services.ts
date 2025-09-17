@@ -5,6 +5,7 @@ import { prisma } from "../../libs/prisma";
 import { Prisma } from "@prisma/client";
 import { includes } from "zod";
 import { rename } from "fs";
+import path from "path";
 
 export const findPostBySlug = async (slug: string) => {
     const post = prisma.post.findUnique({
@@ -80,6 +81,35 @@ export const updatePost = async (slug: string, data: Prisma.PostUpdateInput) => 
         where: { slug },
         data
     })
+
+    return result;
+}
+
+export const deletePost = async (slug: string) => {
+    const post = await findPostBySlug(slug);
+
+    if(!post) {
+        return false;
+    }
+
+    const result = await prisma.post.delete({
+        where: {
+            slug
+        }
+    })
+
+    if(result.cover) {
+        try {
+            const urlParts = result.cover.split('/');
+            const coverName = urlParts[urlParts.length - 1]
+            const filePath = path.join(process.cwd(), 'public', 'images', 'covers', coverName);
+
+            fs.unlink(filePath);
+        } catch (fileError) {
+            console.error("Failed to delete the image file for post:", result.slug, fileError);
+        }
+
+    }
 
     return result;
 }

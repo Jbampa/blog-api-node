@@ -1,5 +1,5 @@
 import { RequestHandler } from "express";
-import { createPost, createSlug, findPostBySlug, handleCover, updatePost } from "./posts.services";
+import { createPost, createSlug, deletePost, findPostBySlug, handleCover, updatePost } from "./posts.services";
 import { User } from "@prisma/client";
 import { findUserById } from "../users/user.service";
 import { coverToUrl } from "../../utils/cover-to-url";
@@ -109,5 +109,15 @@ export const getPostBySlugController: RequestHandler = async (req, res) => {
         tags: post.tags,
         body: post.body,
         slug: post.slug
+    })
+}
+
+export const deletePostBySlugController: RequestHandler = async (req, res) => {
+    const { slug } = req.params;
+
+    await deletePost(slug);
+
+    res.status(200).json({
+        sucess: `Post "${slug}" successfully deleted`
     })
 }
