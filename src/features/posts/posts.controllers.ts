@@ -88,3 +88,26 @@ export const updatePostController: RequestHandler = async (req, res) => {
         author: author
     })
 }
+
+export const getPostBySlugController: RequestHandler = async (req, res) => {
+    const { slug } = req.params;
+
+    const post = await findPostBySlug(slug);
+
+    if(!post) {
+        return res.status(404).json({
+            error: "Post doesn't exist."
+        })
+    }
+
+    return res.status(200).json({
+        id: post.id,
+        status: post.status,
+        createdAt: post.createdAt,
+        cover: coverToUrl(post.cover),
+        authorName: post.author?.name,
+        tags: post.tags,
+        body: post.body,
+        slug: post.slug
+    })
+}
