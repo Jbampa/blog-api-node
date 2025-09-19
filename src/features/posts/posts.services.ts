@@ -3,13 +3,29 @@ import fs from 'fs/promises';
 import slug from "slug";
 import { prisma } from "../../libs/prisma";
 import { Prisma } from "@prisma/client";
-import { includes } from "zod";
-import { rename } from "fs";
 import path from "path";
 
 export const findPostBySlug = async (slug: string) => {
     const post = prisma.post.findUnique({
         where: { slug: slug },
+        include: {
+            author: {
+                select: {
+                    name: true
+                }
+            }
+        }
+    })
+
+    return post;
+}
+
+export const findPublishedPostBySlug = async (slug: string) => {
+    const post = await prisma.post.findUnique({
+        where: {
+            slug: slug,
+            status: "PUBLISHED"
+        },
         include: {
             author: {
                 select: {
