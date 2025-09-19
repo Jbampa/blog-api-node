@@ -136,19 +136,19 @@ export const getAllPostsAndDraftsController: RequestHandler = async (req, res) =
 
     const posts = await getAllPosts(page);
 
-        const postsToReturn = posts.map(post => ({
-            id: post.id,
-            title: post.title,
-            createdAt: post.createdAt,
-            cover: coverToUrl(post.cover),
-            author: post.author,
-            tags: post.tags,
-            slug: post.slug
-        }))
+    const postsToReturn = posts.map(post => ({
+        id: post.id,
+        title: post.title,
+        createdAt: post.createdAt,
+        cover: coverToUrl(post.cover),
+        authorName: post.author,
+        tags: post.tags,
+        slug: post.slug
+    }))
 
-        res.status(200).json({
-            postsToReturn,
-            page
-        })
+    res.status(200).json({
+        postsToReturn,
+        page
+    })
 
 }
