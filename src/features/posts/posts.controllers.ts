@@ -1,6 +1,5 @@
 import { RequestHandler } from "express";
-import { createPost, createSlug, deletePost, findPostBySlug, handleCover, updatePost } from "./posts.services";
-import { User } from "@prisma/client";
+import { createPost, createSlug, deletePost, findPostBySlug, getAllPosts, handleCover, updatePost } from "./posts.services";
 import { findUserById } from "../users/user.service";
 import { coverToUrl } from "../../utils/cover-to-url";
 
@@ -120,4 +119,36 @@ export const deletePostBySlugController: RequestHandler = async (req, res) => {
     res.status(200).json({
         sucess: `Post "${slug}" successfully deleted`
     })
+}
+
+export const getAllPostsAndDraftsController: RequestHandler = async (req, res) => {
+    let page = 1;
+
+    if (req.query.page) {
+        page = parseInt(req.query.page as string);
+
+        if(page <= 0) {
+            return res.status(400).json({
+                error: "Page number must be 1 or higher."
+            })
+        }
+    }
+
+    const posts = await getAllPosts(page);
+
+        const postsToReturn = posts.map(post => ({
+            id: post.id,
+            title: post.title,
+            createdAt: post.createdAt,
+            cover: coverToUrl(post.cover),
+            author: post.author,
+            tags: post.tags,
+            slug: post.slug
+        }))
+
+        res.status(200).json({
+            postsToReturn,
+            page
+        })
+
 }

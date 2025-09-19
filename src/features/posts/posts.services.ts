@@ -104,7 +104,7 @@ export const deletePost = async (slug: string) => {
             const coverName = urlParts[urlParts.length - 1]
             const filePath = path.join(process.cwd(), 'public', 'images', 'covers', coverName);
 
-            fs.unlink(filePath);
+            await fs.unlink(filePath);
         } catch (fileError) {
             console.error("Failed to delete the image file for post:", result.slug, fileError);
         }
@@ -112,4 +112,29 @@ export const deletePost = async (slug: string) => {
     }
 
     return result;
+}
+
+export const getAllPosts = (page: number) => {
+    if(page <= 0) {
+        return [];
+    }
+
+    const perPage = 5;
+
+    const posts = prisma.post.findMany({
+        include: {
+            author: {
+                select: {
+                    name: true
+                }
+            }
+        },
+        orderBy: {
+            createdAt: "desc"            
+        },
+        take: perPage,
+        skip: (page - 1) * perPage
+    })
+
+    return posts;
 }
