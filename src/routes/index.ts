@@ -1,6 +1,6 @@
 import { Router } from "express";
 import authRoutes from "../features/auth/auth.routes";
-import postRoutes from "../features/posts/posts.routes";
+import postRoutes from "../features/posts/admin/posts.routes";
 
 const routes = Router();
 

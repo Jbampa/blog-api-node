@@ -1,7 +1,7 @@
 import { RequestHandler } from "express";
-import { createPost, createSlug, deletePost, findPostBySlug, getAllPosts, handleCover, updatePost } from "./posts.services";
-import { findUserById } from "../users/user.service";
-import { coverToUrl } from "../../utils/cover-to-url";
+import { createPost, createSlug, deletePost, findPostBySlug, getAllPosts, handleCover, updatePost } from "../posts.services";
+import { findUserById } from "../../users/user.service";
+import { coverToUrl } from "../../../utils/cover-to-url";
 
 
 export const addPostController: RequestHandler = async (req, res) => {
