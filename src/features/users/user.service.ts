@@ -1,11 +1,15 @@
 import { Prisma, User } from "@prisma/client"
 import { prisma } from "../../libs/prisma"
-import { encryptPassword } from "./user.utils";
 import { compare } from "bcryptjs";
 import { AppError } from "../../errors/AppError";
 import { createToken } from "../auth/auth.services";
+import { hashSync } from "bcryptjs"
 
 
+export const encryptPassword = async (password: string) => {
+    const hashPassword = await hashSync(password) 
+    return hashPassword;
+}
 
 export const createUser = async (user: Prisma.UserCreateInput) => {
     const encryptedPassword = await encryptPassword(user.password);
@@ -63,3 +67,4 @@ export const authenticateUser = async (email: string, password: string) => {
         token: jwtToken
     }
 }
+
