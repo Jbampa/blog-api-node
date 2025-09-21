@@ -2,7 +2,7 @@ import z from "zod"
 
 export const postBodySchema = z.object({
     title: z.string(),
-    tags: z.string(),
+    tags: z.string().toLowerCase(),
     body: z.string()
 })
 

@@ -179,3 +179,33 @@ export const getAllPublishedPosts = async (page: number) => {
 
     return posts;
 }
+
+export const getPostWithSameTags = async (slug: string) => {
+    const post = await findPostBySlug(slug);
+
+    if(!post) return [];
+
+    const tags = post.tags.split(',');
+
+    if(tags.length === 0) return [];
+
+    const posts = await prisma.post.findMany({
+        where: {
+            status: "PUBLISHED",
+            slug: {not: slug},
+            OR: tags.map(term => ({
+                tags: {contains: term}
+            }))
+        },
+        include: {
+            author: {
+                select: {
+                    name: true
+                }
+            }
+        },
+
+    })
+
+    return posts;
+}
