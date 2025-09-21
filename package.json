@@ -18,7 +18,9 @@
   "description": "Project to practice Node.js.",
   "main": "index.js",
   "scripts": {
-    "start-dev": "tsx --env-file=.env --watch ./src/server.ts"
+    "start-dev": "tsx --env-file=.env --watch ./src/server.ts",
+    "build": "tsc",
+    "start": "node dist/server.js"
   },
   "author": "",
   "license": "ISC",
