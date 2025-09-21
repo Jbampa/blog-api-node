@@ -24,7 +24,9 @@ export const findPublishedPostBySlug = async (slug: string) => {
     const post = await prisma.post.findUnique({
         where: {
             slug: slug,
-            status: "PUBLISHED"
+            AND: {
+                status: "PUBLISHED"
+            }
         },
         include: {
             author: {
