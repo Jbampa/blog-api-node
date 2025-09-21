@@ -1,5 +1,5 @@
 import { RequestHandler } from "express";
-import { findPublishedPostBySlug, getAllPublishedPosts } from "../posts.services";
+import { findPublishedPostBySlug, getAllPublishedPosts, getPostWithSameTags } from "../posts.services";
 import { coverToUrl } from "../../../utils/cover-to-url";
 
 export const getAllPostsController: RequestHandler = async (req, res, next) => {
@@ -66,4 +66,35 @@ export const getPublishedPostBySlugController: RequestHandler = async (req, res,
         next(err);
     }
 
+}
+
+export const getRelatedPostsController: RequestHandler = async (req, res, next) => {
+    try {
+        const {slug} = req.params;
+
+        const posts = await getPostWithSameTags(slug);
+
+        if(posts.length === 0) {
+            return res.status(200).json({
+                error: "No posts found."
+            })
+        }
+
+        const postsToReturn = posts.map(post => ({
+            id: post.id,
+            title: post.title,
+            createdAt: post.createdAt,
+            cover: coverToUrl(post.cover),
+            authorName: post.author,
+            tags: post.tags,
+            slug: post.slug
+        }));
+
+        res.status(200).json({
+            postsToReturn
+        })
+
+    } catch (error) {
+        return next(error)
+    }
 }

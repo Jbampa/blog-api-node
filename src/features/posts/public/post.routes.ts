@@ -1,6 +1,6 @@
 import { Router } from "express";
 import { getAllPostsController } from "./post.controllers";
-import { getRelatedPostsController } from "../admin/posts.controllers";
+import { getRelatedPostsController } from "./post.controllers";
 
 const publicPostRoutes = Router();
 
