@@ -119,7 +119,13 @@ export const getPostBySlugController: RequestHandler = async (req, res, next) =>
 export const deletePostBySlugController: RequestHandler = async (req, res, next) => {
     try {
         const { slug } = req.params;
-        await deletePost(slug);
+        const post = await deletePost(slug);
+
+        if(!post) {
+            return res.status(404).json({
+                error: "Post doesn't exist."
+            })
+        }
 
         return res.status(204).json({});
     } catch (error) {
